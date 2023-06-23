@@ -1,10 +1,10 @@
 package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorType
+import com.aluengo.cleancomposerickandmorty.core.ui.SearchWidgetState
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.MviIntent
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.MviSingleEvent
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.MviViewState
-import com.aluengo.cleancomposerickandmorty.detailCharacter.presentation.SearchWidgetState
 
 sealed class ListCharactersIntent : MviIntent {
     object Load : ListCharactersIntent()
