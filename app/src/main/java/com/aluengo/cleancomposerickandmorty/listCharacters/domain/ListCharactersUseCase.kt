@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ListCharactersUseCase @Inject constructor(private val repository: Repository) {
-    suspend operator fun invoke(): Flow<Resource<ListCharactersDomain>> {
-        return repository.listCharacters()
+    suspend operator fun invoke(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> {
+        return repository.listCharacters(request)
     }
 }

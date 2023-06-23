@@ -38,6 +38,17 @@ data class ListCharactersUI(
                 }
             )
         }
+
+        fun infoFromDomain(info: ListCharactersDomain.Info?): PageInfo {
+
+            info ?: return PageInfo(1, 1, 1, true)
+            return PageInfo(
+                info.count,
+                info.pages,
+                if (info.next == null) info.pages else info.next.substringAfterLast("=").toInt() - 1,
+                info.next == null
+            )
+        }
     }
 
 }

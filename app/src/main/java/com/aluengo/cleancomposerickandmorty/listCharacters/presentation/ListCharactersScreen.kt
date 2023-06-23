@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -54,9 +55,9 @@ fun ListCharactersScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView(
             ViewConfig(
-            onSearchClicked = {
-                submitIntent(ListCharactersIntent.OnSearchClicked)
-            }), searchWidgetState = state.searchState,
+                onSearchClicked = {
+                    submitIntent(ListCharactersIntent.OnSearchClicked)
+                }), searchWidgetState = state.searchState,
             searchTextState = state.searchText,
             onTextChange = {
                 submitIntent(ListCharactersIntent.OnTypeSearch(it))
@@ -104,12 +105,19 @@ fun ListItem(
         submitIntent(ListCharactersIntent.Load)
     })
 
-    Box(Modifier.fillMaxWidth().pullRefresh(freshState)) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .pullRefresh(freshState)) {
         LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
             items(items = state.data, key = { it.id }) {
                 CharacterView(Modifier.animateItemPlacement(), it, submitIntent)
             }
-
+            item {
+                LaunchedEffect(true) {
+                    submitIntent(ListCharactersIntent.EndOfListReached)
+                }
+            }
         }, contentPadding = PaddingValues(0.dp))
 
 
@@ -153,7 +161,8 @@ fun CharacterView(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             fontSize = 16.sp,
             style = MaterialTheme.typography.displaySmall,
-            text = item.name
+            text = item.name,
+            textAlign = TextAlign.Center
         )
     }
 
