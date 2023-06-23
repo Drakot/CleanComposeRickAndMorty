@@ -2,6 +2,7 @@ package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
 
 import androidx.annotation.Keep
+import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 
 @Keep
 data class ListCharactersUI(
@@ -22,4 +23,21 @@ data class ListCharactersUI(
         val image: String,
         val name: String,
     )
+
+
+    companion object {
+        fun fromDomain(data: ListCharactersDomain): ListCharactersUI {
+            return ListCharactersUI(
+
+                results = data.results.map {
+                    Result(
+                        it.id,
+                        it.image,
+                        it.name,
+                    )
+                }
+            )
+        }
+    }
+
 }

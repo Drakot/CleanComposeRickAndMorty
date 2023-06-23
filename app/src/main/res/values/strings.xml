@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CleanComposeRickAndMorty</string>
+    <string name="list_character_empty">No characters</string>
+    <string name="placeholder_search">Find characters</string>
 </resources>

@@ -21,13 +21,25 @@ open class ListCharactersViewModel @Inject constructor(
             is ListCharactersIntent.Load -> {
                 callGetCharacters()
             }
-            is ListCharactersIntent.EndOfListReached -> {}
+            is ListCharactersIntent.EndOfListReached -> {
+                Timber.tag("ListCharactersViewModel").d("EndOfListReached")
+            }
 
-            is ListCharactersIntent.OnCharacterSelected -> {}
-            is ListCharactersIntent.OnCloseSearchClick -> {}
-            is ListCharactersIntent.OnSearch -> {}
-            is ListCharactersIntent.OnSearchClicked -> {}
-            is ListCharactersIntent.OnTypeSearch -> {}
+            is ListCharactersIntent.OnCharacterSelected -> {
+                Timber.tag("ListCharactersViewModel").d("OnCharacterSelected")
+            }
+            is ListCharactersIntent.OnCloseSearchClick -> {
+                Timber.tag("ListCharactersViewModel").d("OnCloseSearchClick")
+            }
+            is ListCharactersIntent.OnSearch -> {
+                Timber.tag("ListCharactersViewModel").d("OnSearch")
+            }
+            is ListCharactersIntent.OnSearchClicked -> {
+                Timber.tag("ListCharactersViewModel").d("OnSearchClicked")
+            }
+            is ListCharactersIntent.OnTypeSearch -> {
+                Timber.tag("ListCharactersViewModel").d("OnTypeSearch")
+            }
         }
     }
 
@@ -40,6 +52,9 @@ open class ListCharactersViewModel @Inject constructor(
                 when (it) {
                     is Resource.Success -> {
                         Timber.tag("ListCharactersViewModel").d("callGetCharacters : ${it.data?.results}")
+                        it.data?.let {listCharacterDomain ->
+                            submitState(viewState.value.copy(data = ListCharactersUI.fromDomain(listCharacterDomain).results))
+                        }
                     }
 
                     is Resource.Error -> {
