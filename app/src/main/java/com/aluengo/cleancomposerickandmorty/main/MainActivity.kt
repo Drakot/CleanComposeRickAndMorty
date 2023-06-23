@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty
+package com.aluengo.cleancomposerickandmorty.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
