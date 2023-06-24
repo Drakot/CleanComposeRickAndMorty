@@ -1,5 +1,6 @@
 package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -40,6 +44,51 @@ import com.aluengo.cleancomposerickandmorty.R
 import com.aluengo.cleancomposerickandmorty.core.ui.CustomIcon
 import com.aluengo.cleancomposerickandmorty.core.ui.ScaffoldView
 import com.aluengo.cleancomposerickandmorty.core.ui.ViewConfig
+
+@Composable
+@Preview
+fun ListCharactersScreenPreview() {
+    ListCharactersScreen(
+        ListCharactersState(
+            data = listOf(
+                ListCharactersUI.Result(
+                    1,
+                    "",
+                    "Rick Sanches",
+                    "Borg",
+                    "Namek",
+                    "12",
+                    "Specter"
+                ), ListCharactersUI.Result(
+                    2,
+                    "",
+                    "Rick Sanches",
+                    "Borg",
+                    "Namek",
+                    "12",
+                    "Specter"
+                ), ListCharactersUI.Result(
+                    23,
+                    "",
+                    "Rick Sanches",
+                    "Borg",
+                    "Namek",
+                    "12",
+                    "Specter"
+                ), ListCharactersUI.Result(
+                    24,
+                    "",
+                    "Rick Sanches Sanches Sanches",
+                    "Borg",
+                    "Namek",
+                    "12",
+                    "Specter"
+                )
+            )
+        ),
+        SnackbarHostState()
+    ) {}
+}
 
 @Composable
 fun ListCharactersScreen(
@@ -141,32 +190,58 @@ fun CharacterView(
                 submitIntent(ListCharactersIntent.OnCharacterSelected(item))
             }
     ) {
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .height(130.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop,
-            error = painterResource(R.drawable.character_placeholder),
-            placeholder = painterResource(R.drawable.character_placeholder),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(item.image)
-                .crossfade(true)
-                .diskCacheKey(item.image)
-                .memoryCacheKey(item.image)
-                .build(),
-            contentDescription = "Character Image",
+        Box(
 
-            )
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 16.sp,
-            style = MaterialTheme.typography.displaySmall,
-            text = item.name,
-            textAlign = TextAlign.Center
-        )
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .height(230.dp)
+        ) {
+
+
+            Card(
+                border = BorderStroke(1.dp, Color.LightGray),
+                shape = RoundedCornerShape(16.dp), modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(0.dp)
+
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(50.dp)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(),
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.titleLarge,
+                        text = item.name,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            AsyncImage(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(0.dp)
+                    .size(160.dp)
+                    .clip(RoundedCornerShape(100)),
+                contentScale = ContentScale.Crop,
+                error = painterResource(R.drawable.character_placeholder),
+                placeholder = painterResource(R.drawable.character_placeholder),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.image)
+                    .crossfade(true)
+                    .diskCacheKey(item.image)
+                    .memoryCacheKey(item.image)
+                    .build(),
+                contentDescription = "Character Image",
+
+                )
+        }
     }
 
 }
-
