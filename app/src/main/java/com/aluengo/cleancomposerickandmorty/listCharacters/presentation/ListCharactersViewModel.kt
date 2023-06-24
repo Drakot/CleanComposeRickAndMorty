@@ -8,7 +8,6 @@ import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterR
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,9 +28,8 @@ open class ListCharactersViewModel @Inject constructor(
             is ListCharactersIntent.EndOfListReached -> {
                 pageInfo?.let {
                     if (!it.lastPage && !viewState.value.isLoading && viewState.value.data.isNotEmpty()) {
-                        Timber.tag("ListCharactersViewModel").d("EndOfListReached")
                         pageInfo?.currentPage = it.currentPage + 1
-                        callGetCharacters(true)
+                        callGetCharacters()
                     }
                 }
             }
@@ -60,7 +58,7 @@ open class ListCharactersViewModel @Inject constructor(
         }
     }
 
-    private fun callGetCharacters(add: Boolean = false) {
+    private fun callGetCharacters() {
         val request = ListCharacterRequest(viewState.value.searchText, pageInfo?.currentPage ?: 1)
 
         submitState(viewState.value.copy(isLoading = true))
