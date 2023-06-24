@@ -2,7 +2,6 @@ package com.aluengo.cleancomposerickandmorty.listCharacters.data
 
 
 import androidx.annotation.Keep
-import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 
 @Keep
 data class ListCharactersResponse(
@@ -42,24 +41,6 @@ data class ListCharactersResponse(
         data class Origin(
             val name: String,
             val url: String
-        )
-    }
-
-    fun toDomain(): ListCharactersDomain {
-        return ListCharactersDomain(
-            ListCharactersDomain.Info(info.count, info.next, info.pages, info.prev),
-            results = results.map {
-                ListCharactersDomain.Result(
-                    it.id,
-                    it.gender,
-                    it.image,
-                    it.name,
-                    it.species,
-                    it.status,
-                    it.type,
-                    it.url
-                )
-            }
         )
     }
 

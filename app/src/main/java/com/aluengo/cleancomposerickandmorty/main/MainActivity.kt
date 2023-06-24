@@ -27,7 +27,7 @@ import com.aluengo.cleancomposerickandmorty.detailCharacter.presentation.Charact
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersScreen
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersUiSingleEvent
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersViewModel
-import com.aluengo.cleancomposerickandmorty.ui.theme.CleanComposeRickAndMortyTheme
+import com.aluengo.cleancomposerickandmorty.core.ui.theme.CleanComposeRickAndMortyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

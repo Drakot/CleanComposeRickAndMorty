@@ -34,6 +34,18 @@ class MapperTest() : BaseTest() {
     }
 
     @Test
+    fun testToDomainCharacter() {
+
+        val input = mockData.createListCharactersResponse().results.first()
+
+        val expectedOutput = mockData.createListCharactersDomain().results.first()
+
+        val actualOutput = sut.toDomainCharacter(input)
+
+        assertEquals(expectedOutput, actualOutput)
+    }
+
+    @Test
     fun testToDomainCharactersInfo() {
         val input = mockData.createListCharactersInfoLocal()
 
@@ -73,9 +85,22 @@ class MapperTest() : BaseTest() {
         assertEquals(null, actualOutput)
     }
 
+    @Test
+    fun `when character response to local is null must return null`() {
+        val actualOutput = sut.toLocalCharacter(null)
+
+        assertEquals(null, actualOutput)
+    }
 
     @Test
-    fun `when InfoLocalModel  is null must return null`() {
+    fun `when character local is null must return null`() {
+        val actualOutput = sut.toDomainCharacterFromLocal(null)
+
+        assertEquals(null, actualOutput)
+    }
+
+    @Test
+    fun `when InfoLocalModel is null must return null`() {
         val actualOutput = sut.toDomainCharactersInfo(null)
 
         assertEquals(null, actualOutput)
@@ -84,6 +109,13 @@ class MapperTest() : BaseTest() {
     @Test
     fun `when list characters pagination response is null must return null`() {
         val actualOutput = sut.toLocalCharactersPagination(null)
+
+        assertEquals(null, actualOutput)
+    }
+
+    @Test
+    fun `when character response is null must return null`() {
+        val actualOutput = sut.toDomainCharacter(null)
 
         assertEquals(null, actualOutput)
     }

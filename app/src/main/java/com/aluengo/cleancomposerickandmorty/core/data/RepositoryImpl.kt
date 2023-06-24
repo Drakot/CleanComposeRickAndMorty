@@ -42,7 +42,7 @@ class RepositoryImpl @Inject constructor(
     }
 
     override fun getCharacter(id: Int): Flow<Resource<ListCharactersDomain.Result>> = flow {
-        val character = mapper.toDomainCharacter(db.getCharacter(id).firstOrNull())
+        val character = mapper.toDomainCharacterFromLocal(db.getCharacter(id).firstOrNull())
         character?.let {
             emit(Resource.Success(character))
         }
@@ -50,7 +50,7 @@ class RepositoryImpl @Inject constructor(
         if (apiResult is Resource.Success) {
             mapper.toDomainCharacter(apiResult.data)?.let {
                 db.saveCharacter(mapper.toLocalCharacter(apiResult.data))
-                emit(Resource.Success(character))
+                emit(Resource.Success(it))
             }
         } else {
             emit(Resource.Error(apiResult.error))

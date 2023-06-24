@@ -1,9 +1,15 @@
 <resources>
-    <string name="app_name">CleanComposeRickAndMorty</string>
+    <string name="app_name">Rick And Morty</string>
     <string name="list_character_empty">No characters</string>
     <string name="placeholder_search">Find characters</string>
+
+    <!--Errors-->
     <string name="error_not_connected">Not connected to the internet</string>
     <string name="error_default">An error occurred</string>
     <string name="error_not_found">Data not found</string>
 
+    <string name="character_detail_species">Species</string>
+    <string name="character_detail_origin">Origin</string>
+    <string name="character_detail_episodes">Number of episodes</string>
+    <string name="character_detail_status">Status</string>
 </resources>

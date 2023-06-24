@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty.ui
+package com.aluengo.cleancomposerickandmorty.core.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.aluengo.cleancomposerickandmorty.core.ui.SearchWidgetState
 
 data class ViewConfig(
     val showBackButton: Boolean = false,
@@ -92,3 +91,12 @@ fun CustomIcon(
     }
 }
 
+@Composable
+fun HorizontalSpacer(height: Int = 4) {
+    Spacer(modifier = Modifier.width(height.dp))
+}
+
+@Composable
+fun VerticalSpacer(height: Int = 4) {
+    Spacer(modifier = Modifier.height(height.dp))
+}

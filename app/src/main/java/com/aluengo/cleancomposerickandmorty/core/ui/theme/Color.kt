@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty.ui.theme
+package com.aluengo.cleancomposerickandmorty.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

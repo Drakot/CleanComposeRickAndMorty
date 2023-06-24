@@ -46,7 +46,7 @@ class MockData (val mapper: Mapper) {
             species = "Human",
             status = "Alive",
             type = "Main",
-            url = "https://api.example.com/characters/1"
+            url = "https://api.example.com/characters/1",
         )
 
         val result2 = ListCharactersResponse.Result(

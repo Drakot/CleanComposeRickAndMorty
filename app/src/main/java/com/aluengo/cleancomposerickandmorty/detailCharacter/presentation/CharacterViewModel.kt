@@ -19,11 +19,19 @@ open class CharacterViewModel @Inject constructor(
     override fun submitIntent(intent: CharacterIntent) {
         when (intent) {
             is CharacterIntent.Load -> {
-                intent.id?.let { callGetCharacter(it) }
+                intent.characterItemInput.id?.let { callGetCharacter(it) }
+
+                submitState(
+                    viewState.value.copy(
+                        data = viewState.value.data?.copy(
+                            name = intent.characterItemInput.name ?: ""
+                        )
+                    )
+                )
             }
 
             is CharacterIntent.OnClickNavIcon -> {
-
+                submitSingleEvent(CharacterUiSingleEvent.GoBack)
             }
         }
     }

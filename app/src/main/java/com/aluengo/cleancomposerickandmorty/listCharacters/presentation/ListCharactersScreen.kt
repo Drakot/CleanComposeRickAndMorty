@@ -37,9 +37,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.aluengo.cleancomposerickandmorty.R
-import com.aluengo.cleancomposerickandmorty.ui.CustomIcon
-import com.aluengo.cleancomposerickandmorty.ui.ScaffoldView
-import com.aluengo.cleancomposerickandmorty.ui.ViewConfig
+import com.aluengo.cleancomposerickandmorty.core.ui.CustomIcon
+import com.aluengo.cleancomposerickandmorty.core.ui.ScaffoldView
+import com.aluengo.cleancomposerickandmorty.core.ui.ViewConfig
 
 @Composable
 fun ListCharactersScreen(
@@ -55,6 +55,7 @@ fun ListCharactersScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView(
             ViewConfig(
+                title = LocalContext.current.getString(R.string.app_name),
                 onSearchClicked = {
                     submitIntent(ListCharactersIntent.OnSearchClicked)
                 }), searchWidgetState = state.searchState,
@@ -108,7 +109,8 @@ fun ListItem(
     Box(
         Modifier
             .fillMaxWidth()
-            .pullRefresh(freshState)) {
+            .pullRefresh(freshState)
+    ) {
         LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
             items(items = state.data, key = { it.id }) {
                 CharacterView(Modifier.animateItemPlacement(), it, submitIntent)

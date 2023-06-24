@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty.ui.theme
+package com.aluengo.cleancomposerickandmorty.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

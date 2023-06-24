@@ -6,7 +6,9 @@ import com.aluengo.cleancomposerickandmorty.core.Resource
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorData
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorResponse
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorType
+import com.aluengo.cleancomposerickandmorty.core.data.Mapper
 import com.aluengo.cleancomposerickandmorty.core.ui.SearchWidgetState
+import com.aluengo.cleancomposerickandmorty.listCharacters.data.MockData
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterRequest
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersUseCase
@@ -25,23 +27,27 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ListCharactersViewModelTest : BaseTest() {
+    private lateinit var domainTestData: ListCharactersDomain
     lateinit var listUseCase: ListCharactersUseCase
     private lateinit var sut: ListCharactersViewModel
+    private lateinit var mockData: MockData
 
     @Before
     fun setUp() {
         listUseCase = mockk()
         sut = spyk(ListCharactersViewModel(listUseCase))
+        mockData = MockData(Mapper())
+        domainTestData = mockData.createListCharactersDomain()
     }
 
     @Test
     fun `on init should load the list characters`(): Unit = runTest {
         val request = ListCharacterRequest("", 1)
-        val testData = createTestData()
-        val uiTestData = ListCharactersUI.fromDomain(testData)
+
+        val uiTestData = ListCharactersUI.fromDomain(domainTestData)
         sut.submitIntent(ListCharactersIntent.Load)
         coEvery { listUseCase(request) } returns flow {
-            emit(Resource.Success(testData))
+            emit(Resource.Success(domainTestData))
         }
 
         val viewState = sut.viewState
@@ -81,10 +87,9 @@ class ListCharactersViewModelTest : BaseTest() {
         val currentPage = 1
         sut.pageInfo = ListCharactersUI.PageInfo(currentPage, lastPage = false)
         val request = ListCharacterRequest("", currentPage + 1)
-        val testData = createTestData()
 
         coEvery { listUseCase(request) } returns flow {
-            emit(Resource.Success(testData))
+            emit(Resource.Success(domainTestData))
         }
 
         initialState()
@@ -94,7 +99,7 @@ class ListCharactersViewModelTest : BaseTest() {
         coEvery { listUseCase(mockk()) }
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(testData).results)
+            assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
         }
     }
 
@@ -129,10 +134,9 @@ class ListCharactersViewModelTest : BaseTest() {
         sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
 
         val request = ListCharacterRequest(searchText, 1)
-        val testData = createTestData()
 
         coEvery { listUseCase(request) } returns flow {
-            emit(Resource.Success(testData))
+            emit(Resource.Success(domainTestData))
         }
 
         sut.submitIntent(ListCharactersIntent.OnSearch(searchText))
@@ -140,7 +144,7 @@ class ListCharactersViewModelTest : BaseTest() {
         assertThat(viewState.value.searchText).isEqualTo(searchText)
         assertThat(sut.pageInfo?.currentPage).isEqualTo(1)
         assertThat(sut.pageInfo?.lastPage).isEqualTo(false)
-        assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(testData).results)
+        assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
     }
 
     @Test
@@ -172,42 +176,8 @@ class ListCharactersViewModelTest : BaseTest() {
 
     fun initialState() {
         val viewState = sut.viewState
-        val testData = createTestData()
         sut.submitState(
-            viewState.value.copy(data = ListCharactersUI.fromDomain(testData).results)
+            viewState.value.copy(data = ListCharactersUI.fromDomain(domainTestData).results)
         )
-    }
-
-    fun createTestData(): ListCharactersDomain {
-        val info = ListCharactersDomain.Info(
-            count = 2,
-            next = "https://example.com/next?page=2",
-            pages = 3,
-            prev = null
-        )
-
-        val result1 = ListCharactersDomain.Result(
-            id = 1,
-            gender = "Male",
-            image = "https://example.com/image1.jpg",
-            name = "John Doe",
-            species = "Human",
-            status = "Alive",
-            type = "Type 1",
-            url = "https://example.com/character/1"
-        )
-
-        val result2 = ListCharactersDomain.Result(
-            id = 2,
-            gender = "Female",
-            image = "https://example.com/image2.jpg",
-            name = "Jane Smith",
-            species = "Alien",
-            status = "Dead",
-            type = "Type 2",
-            url = "https://example.com/character/2"
-        )
-
-        return ListCharactersDomain(info = info, results = listOf(result1, result2))
     }
 }

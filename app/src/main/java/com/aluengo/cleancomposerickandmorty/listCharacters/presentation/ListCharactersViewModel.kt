@@ -40,7 +40,7 @@ open class ListCharactersViewModel @Inject constructor(
                 submitSingleEvent(
                     ListCharactersUiSingleEvent.OpenCharacter(
                         NavRoutes.Character.routeForCharacter(
-                            CharacterItemInput(intent.item.id)
+                            CharacterItemInput(intent.item.id, intent.item.name)
                         )
                     )
                 )

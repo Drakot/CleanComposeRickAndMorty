@@ -22,6 +22,10 @@ data class ListCharactersUI(
         val id: Int,
         val image: String,
         val name: String,
+        val species: String,
+        val origin: String,
+        val episodes: String,
+        val status: String,
     )
 
 
@@ -30,17 +34,12 @@ data class ListCharactersUI(
             return ListCharactersUI(
 
                 results = data.results.map {
-                    Result(
-                        it.id,
-                        it.image,
-                        it.name,
-                    )
+                    fromDomain(it)
                 }
             )
         }
 
         fun infoFromDomain(info: ListCharactersDomain.Info?): PageInfo {
-
             info ?: return PageInfo(1, 1, 1, true)
             return PageInfo(
                 info.count,
@@ -55,6 +54,10 @@ data class ListCharactersUI(
                 data.id,
                 data.image,
                 data.name,
+                data.species,
+                data.origin,
+                data.episodes,
+                data.status
             )
         }
     }

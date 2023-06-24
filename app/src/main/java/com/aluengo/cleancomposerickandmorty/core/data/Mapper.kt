@@ -10,11 +10,11 @@ class Mapper {
 
     fun toDomainCharacters(input: List<CharacterLocalModel>?): List<ListCharactersDomain.Result>? {
         return input?.map {
-            toDomainCharacter(it)!!
+            toDomainCharacterFromLocal(it)!!
         }
     }
 
-    fun toDomainCharacter(input: CharacterLocalModel?): ListCharactersDomain.Result? {
+    fun toDomainCharacterFromLocal(input: CharacterLocalModel?): ListCharactersDomain.Result? {
         input?.apply {
             return ListCharactersDomain.Result(
                 id,
@@ -24,7 +24,9 @@ class Mapper {
                 species,
                 status,
                 type,
-                url
+                url,
+                origin.name,
+                episode.size.toString()
             )
         }
         return null
@@ -35,13 +37,15 @@ class Mapper {
         input?.apply {
             return ListCharactersDomain.Result(
                 id,
-                name,
                 gender,
                 image,
-                created,
+                name,
                 species,
                 status,
                 type,
+                url,
+                origin.name,
+                episode.size.toString()
             )
         }
 

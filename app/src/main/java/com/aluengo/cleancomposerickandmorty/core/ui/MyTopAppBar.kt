@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty.ui
+package com.aluengo.cleancomposerickandmorty.core.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +28,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aluengo.cleancomposerickandmorty.R
-import com.aluengo.cleancomposerickandmorty.core.ui.SearchWidgetState
 
 @Composable
 fun MyTopAppBar(
@@ -67,7 +66,7 @@ fun DefaultAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = viewConfig.title ?: LocalContext.current.getString(R.string.app_name))
+            Text(text = viewConfig.title ?: "")
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = viewConfig.appbarBackgroundColor ?: MaterialTheme.colorScheme.secondary,
@@ -80,7 +79,7 @@ fun DefaultAppBar(
                 IconButton(onClick = {
                     viewConfig.onClickNavIcon()
                 }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+                    Icon(tint = Color.White, imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
                 }
             }
         },
@@ -117,7 +116,7 @@ fun SearchAppBar(
             placeholder = {
                 Text(
                     modifier = Modifier
-                    .alpha(0.5f),
+                        .alpha(0.5f),
                     text = context.getString(R.string.placeholder_search),
                     color = Color.White
                 )
@@ -129,7 +128,7 @@ fun SearchAppBar(
             leadingIcon = {
                 IconButton(
                     modifier = Modifier
-                    .alpha(0.5f),
+                        .alpha(0.5f),
                     onClick = {}
                 ) {
                     Icon(
