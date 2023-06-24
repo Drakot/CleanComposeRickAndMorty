@@ -8,7 +8,8 @@ import com.aluengo.cleancomposerickandmorty.core.utils.whenNotNull
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterRequest
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -17,28 +18,27 @@ class RepositoryImpl @Inject constructor(
     private val mapper: Mapper
 ) : Repository {
     override suspend fun listCharacters(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> = flow {
-        val characters = mapper.toDomainCharacters(db.getCharacters(request.filter).first())
-        val info = mapper.toDomainCharactersInfo(db.getInfo().first())
+        emitCacheResult(request)
+
+        val apiResult = api.listCharacters(request)
+        if (apiResult is Resource.Success) {
+
+            db.saveCharacters(mapper.toLocalCharacters(apiResult.data))
+            db.saveCharactersPagination(mapper.toLocalCharactersPagination(apiResult.data))
+
+            emitCacheResult(request)
+        } else {
+            emit(Resource.Error(apiResult.error))
+        }
+    }
+
+    private suspend fun FlowCollector<Resource<ListCharactersDomain>>.emitCacheResult(request: ListCharacterRequest) {
+        val characters = mapper.toDomainCharacters(db.getCharacters(request.filter).firstOrNull())
+        val info = mapper.toDomainCharactersInfo(db.getInfo().firstOrNull())
 
         whenNotNull(info, characters) { a, b ->
             emit(Resource.Success(ListCharactersDomain(a, b)))
         }
-
-        api.listCharacters(request).also {
-            if (it is Resource.Success) {
-                db.saveCharacters(mapper.toLocalCharacters(it.data))
-                db.saveCharactersPagination(mapper.toLocalCharactersPagination(it.data))
-            } else {
-                emit(Resource.Error(it.error))
-            }
-
-
-
-            whenNotNull(info, characters) { a, b ->
-                emit(Resource.Success(ListCharactersDomain(a, b)))
-            }
-        }
-
     }
 
 }
