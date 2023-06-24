@@ -17,6 +17,13 @@ class RepositoryImpl @Inject constructor(
     private val mapper: Mapper
 ) : Repository {
     override suspend fun listCharacters(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> = flow {
+        val characters = mapper.toDomainCharacters(db.getCharacters(request.filter).first())
+        val info = mapper.toDomainCharactersInfo(db.getInfo().first())
+
+        whenNotNull(info, characters) { a, b ->
+            emit(Resource.Success(ListCharactersDomain(a, b)))
+        }
+
         api.listCharacters(request).also {
             if (it is Resource.Success) {
                 db.saveCharacters(mapper.toLocalCharacters(it.data))
@@ -25,8 +32,7 @@ class RepositoryImpl @Inject constructor(
                 emit(Resource.Error(it.error))
             }
 
-            val characters = mapper.toDomainCharacters(db.getCharacters(request.filter).first())
-            val info = mapper.toDomainCharactersInfo(db.getInfo().first())
+
 
             whenNotNull(info, characters) { a, b ->
                 emit(Resource.Success(ListCharactersDomain(a, b)))
