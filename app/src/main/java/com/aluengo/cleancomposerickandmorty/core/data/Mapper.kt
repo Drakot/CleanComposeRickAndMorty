@@ -31,6 +31,24 @@ class Mapper {
     }
 
 
+    fun toDomainCharacter(input: ListCharactersResponse.Result?): ListCharactersDomain.Result? {
+        input?.apply {
+            return ListCharactersDomain.Result(
+                id,
+                name,
+                gender,
+                image,
+                created,
+                species,
+                status,
+                type,
+            )
+        }
+
+        return null
+    }
+
+
     fun toDomainCharactersInfo(input: InfoLocalModel?): ListCharactersDomain.Info? {
         input?.let {
             return ListCharactersDomain.Info(input.count, input.next, input.pages, input.prev)

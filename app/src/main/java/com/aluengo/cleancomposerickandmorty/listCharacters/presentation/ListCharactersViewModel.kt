@@ -2,6 +2,8 @@ package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.aluengo.cleancomposerickandmorty.core.Resource
+import com.aluengo.cleancomposerickandmorty.core.navigation.CharacterItemInput
+import com.aluengo.cleancomposerickandmorty.core.navigation.NavRoutes
 import com.aluengo.cleancomposerickandmorty.core.ui.SearchWidgetState
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.AbstractMviViewModel
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterRequest
@@ -35,7 +37,13 @@ open class ListCharactersViewModel @Inject constructor(
             }
 
             is ListCharactersIntent.OnCharacterSelected -> {
-
+                submitSingleEvent(
+                    ListCharactersUiSingleEvent.OpenCharacter(
+                        NavRoutes.Character.routeForCharacter(
+                            CharacterItemInput(intent.item.id)
+                        )
+                    )
+                )
             }
 
             is ListCharactersIntent.OnCloseSearchClick -> {

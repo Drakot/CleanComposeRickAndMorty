@@ -49,6 +49,14 @@ data class ListCharactersUI(
                 info.next == null
             )
         }
+
+        fun fromDomain(data: ListCharactersDomain.Result): Result {
+            return Result(
+                data.id,
+                data.image,
+                data.name,
+            )
+        }
     }
 
 }

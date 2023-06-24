@@ -27,4 +27,5 @@ data class ListCharactersState(
 sealed class ListCharactersUiSingleEvent : MviSingleEvent {
     data class ShowMessage(val message: String) : ListCharactersUiSingleEvent()
     data class ShowError(val errorType: ErrorType?) : ListCharactersUiSingleEvent()
+    data class OpenCharacter(val navRoute: String) : ListCharactersUiSingleEvent()
 }

@@ -9,4 +9,8 @@ class ApiService @Inject constructor(private val client: ApiClient) : BaseServic
     suspend fun listCharacters(request: ListCharacterRequest): Resource<ListCharactersResponse> {
         return apiCall { client.listCharacters(request.filter, request.page) }
     }
+
+    suspend fun getCharacter(id: Int): Resource<ListCharactersResponse.Result> {
+        return apiCall { client.getCharacter(id) }
+    }
 }
