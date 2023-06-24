@@ -1,4 +1,4 @@
-package com.aluengorickmorty.core.navigation
+package com.aluengo.cleancomposerickandmorty.core.navigation
 
 import androidx.navigation.NamedNavArgument
 

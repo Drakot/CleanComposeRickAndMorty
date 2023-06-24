@@ -1,9 +1,13 @@
-package com.aluengo.cleancomposerickandmorty.core.data
+package com.aluengo.cleancomposerickandmorty.core.data.remote
 
 import com.aluengo.cleancomposerickandmorty.core.Resource
+import com.aluengo.cleancomposerickandmorty.core.data.ErrorData
+import com.aluengo.cleancomposerickandmorty.core.data.ErrorResponse
+import com.aluengo.cleancomposerickandmorty.core.data.ErrorType
+import com.aluengo.cleancomposerickandmorty.core.utils.loge
+import com.aluengo.cleancomposerickandmorty.core.utils.logw
 import com.google.gson.Gson
 import retrofit2.Response
-import timber.log.Timber
 import java.net.UnknownHostException
 
 abstract class BaseService {
@@ -15,7 +19,7 @@ abstract class BaseService {
 
             return if (!response.isSuccessful) {
                 val errorResponse = mapErrorResponse(response)
-                Timber.tag("BaseService").d(errorResponse.errorData?.error)
+                logw(errorResponse.errorData?.error)
                 Resource.Error(errorResponse)
             } else {
                 if (response.body() == null) {
@@ -25,7 +29,7 @@ abstract class BaseService {
                 }
             }
         } catch (t: Throwable) {
-            Timber.tag("BaseService").e(t)
+            loge(t.message)
             return Resource.Error(mapErrorResponse(t))
         }
     }
@@ -37,7 +41,7 @@ abstract class BaseService {
 
             parsedData
         } catch (e: java.lang.Exception) {
-            Timber.tag("BaseService").e(e.message.toString())
+            loge(e.message.toString())
             null
         }
 

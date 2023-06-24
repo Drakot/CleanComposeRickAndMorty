@@ -1,9 +1,11 @@
 package com.aluengo.cleancomposerickandmorty.core.di
 
 import com.aluengo.cleancomposerickandmorty.BuildConfig
-import com.aluengo.cleancomposerickandmorty.core.data.ApiClient
-import com.aluengo.cleancomposerickandmorty.core.data.ApiService
+import com.aluengo.cleancomposerickandmorty.core.data.Mapper
 import com.aluengo.cleancomposerickandmorty.core.data.RepositoryImpl
+import com.aluengo.cleancomposerickandmorty.core.data.local.LocalStorage
+import com.aluengo.cleancomposerickandmorty.core.data.remote.ApiClient
+import com.aluengo.cleancomposerickandmorty.core.data.remote.ApiService
 import com.aluengo.cleancomposerickandmorty.core.domain.Repository
 import dagger.Module
 import dagger.Provides
@@ -43,7 +45,13 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRepository(service: ApiService) = RepositoryImpl(service) as Repository
+    fun provideMapper() = Mapper()
+
+
+    @Singleton
+    @Provides
+    fun provideRepository(service: ApiService, db: LocalStorage, mapper: Mapper) =
+        RepositoryImpl(service, db, mapper) as Repository
 
     @Singleton
     @Provides

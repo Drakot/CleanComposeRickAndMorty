@@ -71,13 +71,7 @@ open class ListCharactersViewModel @Inject constructor(
                     is Resource.Success -> {
                         it.data?.let { listCharacterDomain ->
                             pageInfo = ListCharactersUI.infoFromDomain(listCharacterDomain.info)
-                            val result = ListCharactersUI.fromDomain(listCharacterDomain).results
-                            val data = if (add) {
-                                viewState.value.data + result
-                            } else {
-                                result
-                            }
-                            submitState(viewState.value.copy(data = data))
+                            submitState(viewState.value.copy(data = ListCharactersUI.fromDomain(listCharacterDomain).results))
                         }
                     }
 

@@ -1,4 +1,4 @@
-package com.aluengo.cleancomposerickandmorty.core.data
+package com.aluengo.cleancomposerickandmorty.core.data.remote
 
 import com.aluengo.cleancomposerickandmorty.listCharacters.data.ListCharactersResponse
 import retrofit2.Response

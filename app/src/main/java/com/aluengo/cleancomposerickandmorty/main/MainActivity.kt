@@ -12,16 +12,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.aluengo.cleancomposerickandmorty.core.navigation.NavRoutes
+import com.aluengo.cleancomposerickandmorty.core.ui.ErrorMapper
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.collectInLaunchedEffectWithLifecycle
+import com.aluengo.cleancomposerickandmorty.core.utils.logd
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersScreen
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersUiSingleEvent
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersViewModel
 import com.aluengo.cleancomposerickandmorty.ui.theme.CleanComposeRickAndMortyTheme
-import com.aluengorickmorty.core.navigation.NavRoutes
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -46,6 +49,7 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val errorMapper = ErrorMapper(LocalContext.current)
     NavHost(
         navController, startDestination = NavRoutes.ListCharacters.route
     ) {
@@ -63,7 +67,8 @@ fun App() {
                     }
 
                     is ListCharactersUiSingleEvent.ShowError -> {
-
+                        logd(event.errorType.toString())
+                        scope.showSnackBar(snackbarHostState, errorMapper.map(event.errorType))
                     }
                 }
             }
