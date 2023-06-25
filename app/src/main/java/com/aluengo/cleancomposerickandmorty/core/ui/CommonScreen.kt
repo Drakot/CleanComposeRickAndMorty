@@ -67,9 +67,11 @@ fun CustomIcon(
     color: Color = Color.White,
     resource: Int? = null,
     size: Dp = 25.dp,
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     IconButton(
+        modifier = modifier,
         onClick = {
             onClick?.invoke()
         }
@@ -83,7 +85,7 @@ fun CustomIcon(
         } else if (resource != null) {
             Icon(
                 painterResource(id = resource),
-                contentDescription = "icon.name",
+                contentDescription = "contentDescription",
                 tint = color,
                 modifier = Modifier.size(size)
             )

@@ -23,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aluengo.cleancomposerickandmorty.R
+import com.aluengo.cleancomposerickandmorty.core.utils.TestTags.LeadingSearchIcon
 
 @Composable
 fun MyTopAppBar(
@@ -127,13 +129,13 @@ fun SearchAppBar(
             singleLine = true,
             leadingIcon = {
                 IconButton(
-                    modifier = Modifier
+                    modifier = Modifier.testTag(LeadingSearchIcon)
                         .alpha(0.5f),
                     onClick = {}
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon",
+                        contentDescription = "Leading Search Icon",
                         tint = Color.White
                     )
                 }

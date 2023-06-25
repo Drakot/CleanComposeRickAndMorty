@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +45,7 @@ import com.aluengo.cleancomposerickandmorty.R
 import com.aluengo.cleancomposerickandmorty.core.ui.CustomIcon
 import com.aluengo.cleancomposerickandmorty.core.ui.ScaffoldView
 import com.aluengo.cleancomposerickandmorty.core.ui.ViewConfig
+import com.aluengo.cleancomposerickandmorty.core.utils.TestTags
 
 @Composable
 @Preview
@@ -116,7 +118,7 @@ fun ListCharactersScreen(
             }, onSearch = {
                 submitIntent(ListCharactersIntent.OnSearch(it))
             }, AppBarContent = {
-                CustomIcon(Icons.Filled.Search, Color.White) {
+                CustomIcon(Icons.Filled.Search, Color.White, modifier = Modifier.testTag(TestTags.SearchIcon)) {
                     submitIntent(ListCharactersIntent.OnSearchClicked)
                 }
 
@@ -213,6 +215,7 @@ fun CharacterView(
                 ) {
                     Text(
                         modifier = Modifier
+                            .testTag("CharacterName")
                             .align(Alignment.Center)
                             .fillMaxWidth(),
                         fontSize = 16.sp,
