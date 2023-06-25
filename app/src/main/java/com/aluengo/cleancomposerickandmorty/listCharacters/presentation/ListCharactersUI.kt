@@ -2,6 +2,7 @@ package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
 
 import androidx.annotation.Keep
+import com.aluengo.cleancomposerickandmorty.core.utils.extractPageNumber
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 
 @Keep
@@ -44,7 +45,7 @@ data class ListCharactersUI(
             return PageInfo(
                 info.count,
                 info.pages,
-                if (info.next == null) info.pages else info.next.substringAfterLast("=").toInt() - 1,
+                if (info.next == null) info.pages else info.next.extractPageNumber() - 1,
                 info.next == null
             )
         }

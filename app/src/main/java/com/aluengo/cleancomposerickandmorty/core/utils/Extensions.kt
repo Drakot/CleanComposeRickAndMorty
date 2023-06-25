@@ -17,3 +17,9 @@ fun Any.logw(message: String?){
 inline fun <T1 : Any, T2 : Any, R : Any> whenNotNull(p1: T1?, p2: T2?, block: (T1, T2) -> R?): R? {
     return if (p1 != null && p2 != null) block(p1, p2) else null
 }
+
+fun String.extractPageNumber(): Int {
+    val regex = """page=(\d+)""".toRegex()
+    val matchResult = regex.find(this)
+    return matchResult?.groupValues?.get(1)?.toIntOrNull() ?: 1
+}
