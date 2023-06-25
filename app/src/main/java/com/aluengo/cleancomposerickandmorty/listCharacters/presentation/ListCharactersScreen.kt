@@ -187,7 +187,7 @@ fun CharacterView(
 ) {
     Column(
         modifier = modifier
-            .padding(8.dp)
+            .padding(8.dp).testTag(TestTags.CharacterView)
             .clickable {
                 submitIntent(ListCharactersIntent.OnCharacterSelected(item))
             }
@@ -215,7 +215,7 @@ fun CharacterView(
                 ) {
                     Text(
                         modifier = Modifier
-                            .testTag("CharacterName")
+
                             .align(Alignment.Center)
                             .fillMaxWidth(),
                         fontSize = 16.sp,

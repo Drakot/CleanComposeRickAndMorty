@@ -14,12 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aluengo.cleancomposerickandmorty.core.navigation.NavRoutes
 import com.aluengo.cleancomposerickandmorty.core.ui.ErrorMapper
 import com.aluengo.cleancomposerickandmorty.core.ui.mvi.collectInLaunchedEffectWithLifecycle
+import com.aluengo.cleancomposerickandmorty.core.ui.theme.CleanComposeRickAndMortyTheme
 import com.aluengo.cleancomposerickandmorty.core.utils.logd
 import com.aluengo.cleancomposerickandmorty.detailCharacter.presentation.CharacterScreen
 import com.aluengo.cleancomposerickandmorty.detailCharacter.presentation.CharacterUiSingleEvent
@@ -27,7 +29,6 @@ import com.aluengo.cleancomposerickandmorty.detailCharacter.presentation.Charact
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersScreen
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersUiSingleEvent
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersViewModel
-import com.aluengo.cleancomposerickandmorty.core.ui.theme.CleanComposeRickAndMortyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,8 +49,8 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun App() {
-    val navController = rememberNavController()
+fun App(navController: NavHostController = rememberNavController()) {
+    //val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val errorMapper = ErrorMapper(LocalContext.current)

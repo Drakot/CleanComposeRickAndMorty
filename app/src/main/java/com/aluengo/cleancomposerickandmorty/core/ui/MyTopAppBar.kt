@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aluengo.cleancomposerickandmorty.R
+import com.aluengo.cleancomposerickandmorty.core.utils.TestTags
 import com.aluengo.cleancomposerickandmorty.core.utils.TestTags.LeadingSearchIcon
 
 @Composable
@@ -110,7 +111,7 @@ fun SearchAppBar(
         color = MaterialTheme.colorScheme.primary
     ) {
         TextField(modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().testTag(TestTags.SearchField),
             value = text,
             onValueChange = {
                 onTextChange(it)
