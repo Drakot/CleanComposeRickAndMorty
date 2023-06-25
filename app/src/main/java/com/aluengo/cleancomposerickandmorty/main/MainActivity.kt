@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(navController: NavHostController = rememberNavController()) {
-    //val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val errorMapper = ErrorMapper(LocalContext.current)
