@@ -92,4 +92,86 @@ class RepositoryImplTest : BaseTest() {
         assertEquals(error, (result as Resource.Error).error)
     }
 
+    @Test
+    fun `listCharactersWithFilter should return characters from API`() = runTest {
+        val request = ListCharacterRequest("someFilter")
+        val charactersFromApi = mockData.createListCharactersResponse()
+        val expectedApiData = Resource.Success(charactersFromApi)
+        val expectedResource = mockData.createListCharactersDomain()
+
+        coEvery { api.listCharacters(request) } returns expectedApiData
+
+        val result = sut.listCharactersWithFilter(request).first()
+
+        coVerify(exactly = 1) { api.listCharacters(request) }
+
+        TestCase.assertTrue(result is Resource.Success)
+        assertEquals(expectedResource, (result as Resource.Success).data)
+    }
+
+    @Test
+    fun `listCharactersWithFilter with Resource_Error should emit error`() = runTest {
+        val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
+        val request = ListCharacterRequest("someFilter")
+
+        coEvery { api.listCharacters(request) } returns Resource.Error(error)
+
+        val result = sut.listCharactersWithFilter(request).first()
+
+        coVerify(exactly = 1) { api.listCharacters(request) }
+
+        TestCase.assertTrue(result is Resource.Error)
+        assertEquals(error, (result as Resource.Error).error)
+    }
+
+
+    @Test
+    fun `Get Character should return character from API when DB is empty`() = runTest {
+        val request = 1
+        val charactersFromApi = mockData.createListCharactersResponse().results.first()
+        val expectedApiData = Resource.Success(charactersFromApi)
+        val expectedResource = mockData.createListCharactersDomain().results.first()
+        val localTestData = mockData.createListCharactersLocal().first()
+
+        coEvery { db.getCharacter(request) } returns flowOf(null)
+
+        coEvery { db.saveCharacter(any()) } just runs
+        coEvery { api.getCharacter(request) } returns expectedApiData
+
+        val result = sut.getCharacter(request).first()
+        assertEquals(expectedResource, (result as Resource.Success).data)
+    }
+
+    @Test
+    fun `Get Character should return character first from DB then from Api when available`() = runTest {
+        val request = 1
+        val charactersFromApi = mockData.createListCharactersResponse().results[1]
+        val expectedApiData = Resource.Success(charactersFromApi)
+        val expectedResource = mockData.createListCharactersDomain().results.first()
+        val localTestData = mockData.createListCharactersLocal().first()
+
+        coEvery { db.getCharacter(request) } returns flowOf(localTestData)
+        coEvery { db.saveCharacter(any()) } just runs
+        coEvery { api.getCharacter(request) } returns expectedApiData
+
+        val result = sut.getCharacter(request).first()
+        assertEquals(expectedResource, (result as Resource.Success).data)
+    }
+
+    @Test
+    fun `Get Character with Resource_Error should emit error`() = runTest {
+        val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
+        val request = 1
+
+        coEvery { api.getCharacter(request) } returns Resource.Error(error)
+        coEvery { db.getCharacter(request) } returns flowOf(null)
+
+        val result = sut.getCharacter(request).first()
+
+        coVerify(exactly = 1) { api.getCharacter(request) }
+
+        TestCase.assertTrue(result is Resource.Error)
+        assertEquals(error, (result as Resource.Error).error)
+    }
+
 }

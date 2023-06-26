@@ -32,6 +32,16 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    override fun listCharactersWithFilter(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> = flow {
+        val apiResult = api.listCharacters(request)
+        if (apiResult is Resource.Success) {
+
+            emit(Resource.Success(mapper.toDomainCharactersResponse(apiResult.data)))
+        } else {
+            emit(Resource.Error(apiResult.error))
+        }
+    }
+
     private suspend fun FlowCollector<Resource<ListCharactersDomain>>.emitCacheResult(request: ListCharacterRequest) {
         val characters = mapper.toDomainCharacters(db.getCharacters(request.filter).firstOrNull())
         val info = mapper.toDomainCharactersInfo(db.getInfo().firstOrNull())
@@ -56,5 +66,6 @@ class RepositoryImpl @Inject constructor(
             emit(Resource.Error(apiResult.error))
         }
     }
+
 
 }

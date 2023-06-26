@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface Repository {
     suspend fun listCharacters(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>>
     fun getCharacter(id: Int): Flow<Resource<ListCharactersDomain.Result>>
+    fun listCharactersWithFilter(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>>
 }

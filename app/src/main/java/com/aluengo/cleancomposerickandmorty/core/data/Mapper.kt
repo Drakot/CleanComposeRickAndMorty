@@ -97,4 +97,52 @@ class Mapper {
         return null
     }
 
+    fun toDomainCharactersResponse(input: ListCharactersResponse?): ListCharactersDomain? {
+        input?.apply {
+            return toDomainCharactersInfo(info)?.let {
+                toDomainCharactersFromList(results)?.let { it1 ->
+                    ListCharactersDomain(
+                        it,
+                        it1
+
+                    )
+                }
+            }
+        }
+        return null
+    }
+
+    private fun toDomainCharactersFromList(input: List<ListCharactersResponse.Result>?): List<ListCharactersDomain.Result>? {
+        input?.let {
+            return input.map {
+                toDomainCharacterResult(it)
+            }
+        }
+        return null
+    }
+
+    private fun toDomainCharacterResult(input: ListCharactersResponse.Result): ListCharactersDomain.Result {
+        input.apply {
+            return ListCharactersDomain.Result(
+                id,
+                gender,
+                image,
+                name,
+                species,
+                status,
+                type,
+                url,
+                origin.name,
+                episode.size.toString()
+            )
+        }
+    }
+
+    private fun toDomainCharactersInfo(input: ListCharactersResponse.Info?): ListCharactersDomain.Info? {
+        input?.let {
+            return ListCharactersDomain.Info(input.count, input.next, input.pages, input.prev)
+        }
+        return null
+    }
+
 }

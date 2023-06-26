@@ -1,6 +1,5 @@
 package com.aluengo.cleancomposerickandmorty.core.data
 
-import android.util.Log
 import com.aluengo.cleancomposerickandmorty.core.Resource
 import com.aluengo.cleancomposerickandmorty.core.domain.Repository
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterRequest
@@ -15,13 +14,6 @@ class FakeRepository @Inject constructor(
     override suspend fun listCharacters(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> = flow {
 
         val apiResult = mockData.createListCharactersDomain()
-            .copy(results = mockData.createListCharactersDomain().results.filter {
-                it.name.contains(
-                    request.filter.toString(),
-                    true
-                )
-            })
-        Log.e("FakeRepository", "filter: ${request.filter.toString()} count: ${apiResult.results.size}")
         val response = Resource.Success(apiResult)
         emit(response)
     }
@@ -29,6 +21,19 @@ class FakeRepository @Inject constructor(
     override fun getCharacter(id: Int): Flow<Resource<ListCharactersDomain.Result>> = flow {
         val apiResult = Resource.Success(mockData.createListCharactersDomain().results.firstOrNull())
         emit(apiResult)
+    }
+
+    override fun listCharactersWithFilter(request: ListCharacterRequest): Flow<Resource<ListCharactersDomain>> = flow {
+
+        val apiResult = mockData.createListCharactersDomain()
+            .copy(results = mockData.createListCharactersDomain().results.filter {
+                it.name.contains(
+                    request.filter.toString(),
+                    true
+                )
+            })
+        val response = Resource.Success(apiResult)
+        emit(response)
     }
 
 }

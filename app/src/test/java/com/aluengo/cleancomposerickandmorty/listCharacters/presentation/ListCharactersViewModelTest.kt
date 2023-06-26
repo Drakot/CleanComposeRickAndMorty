@@ -12,6 +12,7 @@ import com.aluengo.cleancomposerickandmorty.listCharacters.data.MockData
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharacterRequest
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersUseCase
+import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListFilteredCharactersUseCase
 import com.aluengo.cleancomposerickandmorty.testFlow
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Called
@@ -29,13 +30,15 @@ import org.junit.Test
 class ListCharactersViewModelTest : BaseTest() {
     private lateinit var domainTestData: ListCharactersDomain
     lateinit var listUseCase: ListCharactersUseCase
+    lateinit var listFilteredCharactersUseCase: ListFilteredCharactersUseCase
     private lateinit var sut: ListCharactersViewModel
     private lateinit var mockData: MockData
 
     @Before
     fun setUp() {
         listUseCase = mockk()
-        sut = spyk(ListCharactersViewModel(listUseCase))
+        listFilteredCharactersUseCase = mockk()
+        sut = spyk(ListCharactersViewModel(listUseCase,listFilteredCharactersUseCase))
         mockData = MockData(Mapper())
         domainTestData = mockData.createListCharactersDomain()
     }
@@ -135,7 +138,7 @@ class ListCharactersViewModelTest : BaseTest() {
 
         val request = ListCharacterRequest(searchText, 1)
 
-        coEvery { listUseCase(request) } returns flow {
+        coEvery { listFilteredCharactersUseCase(request) } returns flow {
             emit(Resource.Success(domainTestData))
         }
 
@@ -164,6 +167,26 @@ class ListCharactersViewModelTest : BaseTest() {
         val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
 
         coEvery { listUseCase(request) } returns flow {
+            emit(Resource.Error(error))
+        }
+
+        sut.submitIntent(ListCharactersIntent.Load)
+        sut.viewState.testFlow(this) {
+            verify { sut.submitSingleEvent(match { it is ListCharactersUiSingleEvent.ShowError && it.errorType == ErrorType.NotConnected }) }
+        }
+    }
+
+    @Test
+    fun `callGetCharacters with filter should handle Resource Error and show error event`() = runTest {
+        initialState()
+        val searchText = "Search Text"
+        sut.submitIntent(ListCharactersIntent.OnTypeSearch(searchText))
+        sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
+
+        val request = ListCharacterRequest(searchText, 1)
+        val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
+
+        coEvery { listFilteredCharactersUseCase(request) } returns flow {
             emit(Resource.Error(error))
         }
 
