@@ -16,7 +16,7 @@ data class ErrorResponse(
     val errorType: ErrorType get() = errorData?.errorType ?: ErrorType.Default
 }
 
-sealed class ErrorType() {
+sealed class ErrorType {
     object Default : ErrorType()
     object NotConnected : ErrorType()
     object NotFound : ErrorType()

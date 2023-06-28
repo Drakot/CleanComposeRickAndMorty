@@ -8,7 +8,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MapperTest() : BaseTest() {
+class MapperTest : BaseTest() {
 
     private lateinit var mockData: MockData
     private lateinit var sut: Mapper

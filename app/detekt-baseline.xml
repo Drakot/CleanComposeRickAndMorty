@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MatchingDeclarationName:CommonScreen.kt$ViewConfig</ID>
+    <ID>TopLevelPropertyNaming:PullRefreshIndicator.kt$// Values taken from SwipeRefreshLayout private const val MinAlpha = 0.3f</ID>
+    <ID>TopLevelPropertyNaming:PullRefreshIndicator.kt$private const val CrossfadeDurationMs = 100</ID>
+    <ID>TopLevelPropertyNaming:PullRefreshIndicator.kt$private const val MaxAlpha = 1f</ID>
+    <ID>TopLevelPropertyNaming:PullRefreshIndicator.kt$private const val MaxProgressArc = 0.8f</ID>
+    <ID>TopLevelPropertyNaming:PullRefreshState.kt$/** * The distance pulled is multiplied by this value to give us the adjusted distance pulled, which * is used in calculating the indicator position (when the adjusted distance pulled is less than * the refresh threshold, it is the indicator position, otherwise the indicator position is * derived from the progress). */ private const val DragMultiplier = 0.5f</ID>
+  </CurrentIssues>
+</SmellBaseline>

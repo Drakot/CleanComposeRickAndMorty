@@ -14,8 +14,8 @@ fun Any.logw(message: String?){
     Timber.tag(this.javaClass.simpleName).w(message)
 }
 
-inline fun <T1 : Any, T2 : Any, R : Any> whenNotNull(p1: T1?, p2: T2?, block: (T1, T2) -> R?): R? {
-    return if (p1 != null && p2 != null) block(p1, p2) else null
+inline fun <T1 : Any, T2 : Any, R : Any> whenNotNull(first: T1?, second: T2?, block: (T1, T2) -> R?): R? {
+    return if (first != null && second != null) block(first, second) else null
 }
 
 fun String.extractPageNumber(): Int {

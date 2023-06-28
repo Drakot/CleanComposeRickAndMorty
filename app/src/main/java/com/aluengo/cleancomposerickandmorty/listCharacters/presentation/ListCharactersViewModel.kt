@@ -20,7 +20,7 @@ open class ListCharactersViewModel @Inject constructor(
     val listFilteredCharactersUseCase: ListFilteredCharactersUseCase
 ) : AbstractMviViewModel<ListCharactersIntent, ListCharactersState, ListCharactersUiSingleEvent>() {
     var pageInfo: ListCharactersUI.PageInfo? = null
-
+    val itemsPerPage = 20
     override fun initState(): ListCharactersState = ListCharactersState()
 
     override fun submitIntent(intent: ListCharactersIntent) {
@@ -33,7 +33,9 @@ open class ListCharactersViewModel @Inject constructor(
             is ListCharactersIntent.EndOfListReached -> {
                 pageInfo?.let {
                     logd("EndOfListReached")
-                    if (!it.lastPage && !viewState.value.isLoading && viewState.value.data.isNotEmpty() && viewState.value.data.size >= 20) {
+                    if (!it.lastPage && !viewState.value.isLoading && viewState.value.data.isNotEmpty() &&
+                        viewState.value.data.size >= itemsPerPage
+                    ) {
                         pageInfo?.currentPage = it.currentPage + 1
                         callGetCharacters()
                     }

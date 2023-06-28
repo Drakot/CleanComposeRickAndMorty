@@ -47,6 +47,7 @@ import com.aluengo.cleancomposerickandmorty.core.ui.ScaffoldView
 import com.aluengo.cleancomposerickandmorty.core.ui.ViewConfig
 import com.aluengo.cleancomposerickandmorty.core.utils.TestTags
 
+@SuppressWarnings("MagicNumber")
 @Composable
 @Preview
 fun ListCharactersScreenPreview() {
