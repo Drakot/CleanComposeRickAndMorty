@@ -1,6 +1,10 @@
 name: Android UI Testing CI
 
-on: [push]
+on:
+  push:
+    branches: [ "ci/uitesting", "main" ]
+  pull_request:
+    branches: [ "ci/uitesting", "main" ]
 
 jobs:
   uitest:
