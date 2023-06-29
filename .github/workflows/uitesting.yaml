@@ -20,9 +20,24 @@ jobs:
 
       - name: Run espresso tests
         uses: reactivecircus/android-emulator-runner@v2
+
         with:
-          api-level: 30
+          api-level: 29
+          ndk: 21.4.7075529
+          cmake: 3.23.2
+          target: google_apis
+          emulator-build: 7425822
           script: ./gradlew connectedCheck
+          arch: x86
+          cores: 2
+          avd-name: test
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          disable-spellchecker: false
+          disable-linux-hw-accel: auto
+          enable-hw-keyboard: false
+          channel: stable
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
