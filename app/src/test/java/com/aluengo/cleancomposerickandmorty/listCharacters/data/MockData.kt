@@ -5,10 +5,10 @@ import com.aluengo.cleancomposerickandmorty.listCharacters.data.local.CharacterL
 import com.aluengo.cleancomposerickandmorty.listCharacters.data.local.InfoLocalModel
 import com.aluengo.cleancomposerickandmorty.listCharacters.domain.ListCharactersDomain
 
-class MockData (val mapper: Mapper) {
+class MockData(val mapper: Mapper) {
 
-    fun createListCharactersDomain(): ListCharactersDomain {
-        val localTestData = createListCharactersLocal()
+    fun createListCharactersDomain(number: Int = 2): ListCharactersDomain {
+        val localTestData = createListCharactersLocal(number)
         val infoData = createListCharactersInfoLocal()
         val characters = mapper.toDomainCharacters(localTestData)!!
         val info = mapper.toDomainCharactersInfo(infoData)!!
@@ -16,8 +16,8 @@ class MockData (val mapper: Mapper) {
         return ListCharactersDomain(info, characters)
     }
 
-    fun createListCharactersLocal(): List<CharacterLocalModel> {
-        val testData = createListCharactersResponse()
+    fun createListCharactersLocal(number: Int = 2): List<CharacterLocalModel> {
+        val testData = createListCharactersResponse(number)
         return mapper.toLocalCharacters(testData)!!
     }
 
@@ -26,7 +26,7 @@ class MockData (val mapper: Mapper) {
         return mapper.toLocalCharactersPagination(testData)!!
     }
 
-    fun createListCharactersResponse(): ListCharactersResponse {
+    fun createListCharactersResponse(number: Int = 2): ListCharactersResponse {
         val info = ListCharactersResponse.Info(
             count = 2,
             next = "https://api.example.com/characters?page=2",
@@ -36,36 +36,62 @@ class MockData (val mapper: Mapper) {
 
         val result1 = ListCharactersResponse.Result(
             created = "2023-06-01T12:00:00Z",
-            episode = listOf("https://api.example.com/episodes/1", "https://api.example.com/episodes/2"),
+            episode = listOf(
+                "https://api.example.com/episodes/1",
+                "https://api.example.com/episodes/2"
+            ),
             gender = "Male",
             id = 1,
             image = "https://api.example.com/images/1.png",
-            location = ListCharactersResponse.Result.Location("Earth", "https://api.example.com/locations/1"),
+            location = ListCharactersResponse.Result.Location(
+                "Earth",
+                "https://api.example.com/locations/1"
+            ),
             name = "Rick Sanchez",
-            origin = ListCharactersResponse.Result.Origin("Earth", "https://api.example.com/origins/1"),
+            origin = ListCharactersResponse.Result.Origin(
+                "Earth",
+                "https://api.example.com/origins/1"
+            ),
             species = "Human",
             status = "Alive",
             type = "Main",
             url = "https://api.example.com/characters/1",
         )
 
-        val result2 = ListCharactersResponse.Result(
+        var results = emptyList<ListCharactersResponse.Result>()
+        if (number > 2) {
+            results = (1..20).map {
+                characterResult(it)
+            }
+        } else {
+            results = listOf(result1, characterResult())
+        }
+        return ListCharactersResponse(info, results)
+    }
+
+    fun characterResult(id: Int = 2): ListCharactersResponse.Result {
+        return ListCharactersResponse.Result(
             created = "2023-06-02T12:00:00Z",
-            episode = listOf("https://api.example.com/episodes/3", "https://api.example.com/episodes/4"),
+            episode = listOf(
+                "https://api.example.com/episodes/3",
+                "https://api.example.com/episodes/4"
+            ),
             gender = "Female",
-            id = 2,
+            id = id,
             image = "https://api.example.com/images/2.png",
-            location = ListCharactersResponse.Result.Location("Space", "https://api.example.com/locations/2"),
+            location = ListCharactersResponse.Result.Location(
+                "Space",
+                "https://api.example.com/locations/2"
+            ),
             name = "Morty Smith",
-            origin = ListCharactersResponse.Result.Origin("Earth", "https://api.example.com/origins/1"),
+            origin = ListCharactersResponse.Result.Origin(
+                "Earth",
+                "https://api.example.com/origins/1"
+            ),
             species = "Human",
             status = "Alive",
             type = "Main",
             url = "https://api.example.com/characters/2"
         )
-
-        val results = listOf(result1, result2)
-
-        return ListCharactersResponse(info, results)
     }
 }

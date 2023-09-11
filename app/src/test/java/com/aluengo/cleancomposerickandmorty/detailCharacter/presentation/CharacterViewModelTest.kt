@@ -1,5 +1,6 @@
 package com.aluengo.cleancomposerickandmorty.detailCharacter.presentation
 
+import app.cash.turbine.test
 import com.aluengo.cleancomposerickandmorty.BaseTest
 import com.aluengo.cleancomposerickandmorty.core.Resource
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorData
@@ -11,6 +12,7 @@ import com.aluengo.cleancomposerickandmorty.detailCharacter.domain.GetCharacterU
 import com.aluengo.cleancomposerickandmorty.listCharacters.data.MockData
 import com.aluengo.cleancomposerickandmorty.listCharacters.presentation.ListCharactersUI
 import com.aluengo.cleancomposerickandmorty.testFlow
+import com.google.common.truth.ExpectFailure.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
@@ -37,38 +39,43 @@ class CharacterViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `submitIntent Load should call getCharacterUseCase and update state with success`() = runTest {
-        val characterId = 1
-        val characterIntent = CharacterIntent.Load(CharacterItemInput(characterId, "Test Name"))
-        val characterDomain = mockData.createListCharactersDomain().results.first()
-        val expectedData = ListCharactersUI.fromDomain(characterDomain)
+    fun `submitIntent Load should call getCharacterUseCase and update state with success`() =
+        runTest {
+            val characterId = 1
+            val characterIntent =
+                CharacterIntent.Load(CharacterItemInput(characterId, "Test Name"))
+            val characterDomain = mockData.createListCharactersDomain().results.first()
+            val expectedData = ListCharactersUI.fromDomain(characterDomain)
 
-        coEvery { mockGetCharacterUseCase(characterId) } returns flow {
-            emit(Resource.Success(characterDomain))
-        }
+            coEvery { mockGetCharacterUseCase(characterId) } returns flow {
+                emit(Resource.Success(characterDomain))
+            }
 
-        sut.submitIntent(characterIntent)
-        sut.viewState.testFlow(this) {
             assertEquals(false, sut.viewState.value.isLoading)
-            assertEquals(expectedData, sut.viewState.value.data)
+            sut.submitIntent(characterIntent)
+            sut.viewState.test {
+                assertEquals(true, awaitItem().isLoading)
+                assertEquals(expectedData, awaitItem().data)
+                assertEquals(false, awaitItem().isLoading)
+            }
         }
-    }
 
     @Test
-    fun `submitIntent Load should call getCharacterUseCase and update state with error`() = runTest {
-        val characterId = 1
-        val characterIntent = CharacterIntent.Load(CharacterItemInput(characterId, "Test Name"))
-        val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
+    fun `submitIntent Load should call getCharacterUseCase and update state with error`() =
+        runTest {
+            val characterId = 1
+            val characterIntent = CharacterIntent.Load(CharacterItemInput(characterId, "Test Name"))
+            val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
 
-        coEvery { mockGetCharacterUseCase(characterId) } returns flow {
-            emit(Resource.Error(error))
-        }
+            coEvery { mockGetCharacterUseCase(characterId) } returns flow {
+                emit(Resource.Error(error))
+            }
 
-        sut.submitIntent(characterIntent)
-        sut.viewState.testFlow(this) {
-            verify { sut.submitSingleEvent(match { it is CharacterUiSingleEvent.ShowError && it.errorType == ErrorType.NotConnected }) }
+            sut.submitIntent(characterIntent)
+            sut.viewState.testFlow(this) {
+                verify { sut.submitSingleEvent(match { it is CharacterUiSingleEvent.ShowError && it.errorType == ErrorType.NotConnected }) }
+            }
         }
-    }
 
     @Test
     fun `submitIntent OnClickNavIcon should submit GoBack event`() = runTest {

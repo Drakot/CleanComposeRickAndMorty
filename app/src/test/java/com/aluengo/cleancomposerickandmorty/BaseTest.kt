@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -59,7 +60,7 @@ public suspend fun <T> Flow<T>.testFlow(
 ) {
     test {
 
-        scope.advanceTimeBy(1000)
+        scope.advanceUntilIdle()
         onFinish()
 
         cancelAndConsumeRemainingEvents()

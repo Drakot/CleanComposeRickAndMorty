@@ -1,6 +1,7 @@
 package com.aluengo.cleancomposerickandmorty.listCharacters.presentation
 
 
+import app.cash.turbine.test
 import com.aluengo.cleancomposerickandmorty.BaseTest
 import com.aluengo.cleancomposerickandmorty.core.Resource
 import com.aluengo.cleancomposerickandmorty.core.data.ErrorData
@@ -38,7 +39,7 @@ class ListCharactersViewModelTest : BaseTest() {
     fun setUp() {
         listUseCase = mockk()
         listFilteredCharactersUseCase = mockk()
-        sut = spyk(ListCharactersViewModel(listUseCase,listFilteredCharactersUseCase))
+        sut = spyk(ListCharactersViewModel(listUseCase, listFilteredCharactersUseCase))
         mockData = MockData(Mapper())
         domainTestData = mockData.createListCharactersDomain()
     }
@@ -53,13 +54,12 @@ class ListCharactersViewModelTest : BaseTest() {
             emit(Resource.Success(domainTestData))
         }
 
-        val viewState = sut.viewState
-        assertThat(viewState.value.data).isEqualTo(listOf<ListCharactersUI.Result>())
-        assertThat(true).isEqualTo(viewState.value.isLoading)
+        assertThat(sut.viewState.value.data).isEqualTo(listOf<ListCharactersUI.Result>())
 
-        viewState.testFlow(this) {
-            assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewState.value.data).isEqualTo(uiTestData.results)
+        sut.viewState.test {
+            assertThat(awaitItem().isLoading).isEqualTo(true)
+            assertThat(awaitItem().data).isEqualTo(uiTestData.results)
+            assertThat(awaitItem().isLoading).isEqualTo(false)
         }
     }
 
@@ -86,23 +86,27 @@ class ListCharactersViewModelTest : BaseTest() {
 
     @Test
     fun `end of list reached should call get characters`() = runTest {
-        val viewState = sut.viewState
+        //val viewState = sut.viewState
         val currentPage = 1
+        domainTestData = mockData.createListCharactersDomain(20)
         sut.pageInfo = ListCharactersUI.PageInfo(currentPage, lastPage = false)
         val request = ListCharacterRequest("", currentPage + 1)
+
 
         coEvery { listUseCase(request) } returns flow {
             emit(Resource.Success(domainTestData))
         }
 
         initialState()
-
+        coEvery { listUseCase(mockk()) }
         sut.submitIntent(ListCharactersIntent.EndOfListReached)
 
-        coEvery { listUseCase(mockk()) }
-        viewState.testFlow(this) {
-            assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
+
+        sut.viewState.test {
+            assertThat(awaitItem().isLoading).isEqualTo(true)
+            val second = awaitItem()
+            assertThat(second.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
+            assertThat(second.isLoading).isEqualTo(false)
         }
     }
 
@@ -129,26 +133,27 @@ class ListCharactersViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `on search should update search state, reset page info, and call get characters`() = runTest {
-        initialState()
-        val viewState = sut.viewState
-        val searchText = "Search Text"
-        sut.submitIntent(ListCharactersIntent.OnTypeSearch(searchText))
-        sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
+    fun `on search should update search state, reset page info, and call get characters`() =
+        runTest {
+            initialState()
+            val viewState = sut.viewState
+            val searchText = "Search Text"
+            sut.submitIntent(ListCharactersIntent.OnTypeSearch(searchText))
+            sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
 
-        val request = ListCharacterRequest(searchText, 1)
+            val request = ListCharacterRequest(searchText, 1)
 
-        coEvery { listFilteredCharactersUseCase(request) } returns flow {
-            emit(Resource.Success(domainTestData))
+            coEvery { listFilteredCharactersUseCase(request) } returns flow {
+                emit(Resource.Success(domainTestData))
+            }
+
+            sut.submitIntent(ListCharactersIntent.OnSearch(searchText))
+
+            assertThat(viewState.value.searchText).isEqualTo(searchText)
+            assertThat(sut.pageInfo?.currentPage).isEqualTo(1)
+            assertThat(sut.pageInfo?.lastPage).isEqualTo(false)
+            assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
         }
-
-        sut.submitIntent(ListCharactersIntent.OnSearch(searchText))
-
-        assertThat(viewState.value.searchText).isEqualTo(searchText)
-        assertThat(sut.pageInfo?.currentPage).isEqualTo(1)
-        assertThat(sut.pageInfo?.lastPage).isEqualTo(false)
-        assertThat(viewState.value.data).isEqualTo(ListCharactersUI.fromDomain(domainTestData).results)
-    }
 
     @Test
     fun `on search clicked should update search state to opened`() {
@@ -177,24 +182,25 @@ class ListCharactersViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `callGetCharacters with filter should handle Resource Error and show error event`() = runTest {
-        initialState()
-        val searchText = "Search Text"
-        sut.submitIntent(ListCharactersIntent.OnTypeSearch(searchText))
-        sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
+    fun `callGetCharacters with filter should handle Resource Error and show error event`() =
+        runTest {
+            initialState()
+            val searchText = "Search Text"
+            sut.submitIntent(ListCharactersIntent.OnTypeSearch(searchText))
+            sut.pageInfo = ListCharactersUI.PageInfo(currentPage = 2, lastPage = false)
 
-        val request = ListCharacterRequest(searchText, 1)
-        val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
+            val request = ListCharacterRequest(searchText, 1)
+            val error = ErrorResponse(0, ErrorData("", ErrorType.NotConnected))
 
-        coEvery { listFilteredCharactersUseCase(request) } returns flow {
-            emit(Resource.Error(error))
+            coEvery { listFilteredCharactersUseCase(request) } returns flow {
+                emit(Resource.Error(error))
+            }
+
+            sut.submitIntent(ListCharactersIntent.Load)
+            sut.viewState.testFlow(this) {
+                verify { sut.submitSingleEvent(match { it is ListCharactersUiSingleEvent.ShowError && it.errorType == ErrorType.NotConnected }) }
+            }
         }
-
-        sut.submitIntent(ListCharactersIntent.Load)
-        sut.viewState.testFlow(this) {
-            verify { sut.submitSingleEvent(match { it is ListCharactersUiSingleEvent.ShowError && it.errorType == ErrorType.NotConnected }) }
-        }
-    }
 
 
     fun initialState() {
